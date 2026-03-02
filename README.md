@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.jpg" width="120" alt="TinyAgent Logo" />
+  <img src="./logo.jpg" width="120" alt="TinyAgent Logo" />
 </p>
 
 <h1 align="center">TinyAgent</h1>
@@ -152,11 +152,6 @@ always_load: false
 
 TinyAgent 不是要替代任何框架。它的目标是让你 **读完代码后真正理解 Agent 是怎么工作的**。
 
-## 📄 License
-
-MIT
-
----
 
 <p align="center">
   <em>真正重要的东西，往往简单到让人不敢相信。</em>
