@@ -8,6 +8,7 @@ from typing import List, Dict, Any, Optional
 from .memory import MemoryStore
 from .skills import SkillsLoader
 
+
 class ContextBuilder:
     """
     上下文构建器模块。
@@ -16,7 +17,10 @@ class ContextBuilder:
     2. 历史对话 (Short-Term Memory)
     3. User 的新一条输入
     """
-    def __init__(self, memory_store: MemoryStore, skills_loader: SkillsLoader, workspace_dir: str):
+
+    def __init__(
+        self, memory_store: MemoryStore, skills_loader: SkillsLoader, workspace_dir: str
+    ):
         self.memory = memory_store
         self.skills = skills_loader
         self.workspace_dir = workspace_dir
@@ -24,7 +28,7 @@ class ContextBuilder:
     def build_system_prompt(self) -> str:
         """构建系统提示词"""
         parts = []
-        
+
         # 1. 基础人格与时间设定
         parts.append(self._get_identity())
 
@@ -52,7 +56,7 @@ class ContextBuilder:
         system = platform.system()
         runtime = f"{'macOS' if system == 'Darwin' else system} {platform.machine()}, Python {platform.python_version()}"
         workspace_path = Path(self.workspace_dir).resolve().as_posix()
-        
+
         return f"""你名叫 tinybot，是一个有用的 AI 助手。 
 
 ## 当前时间
@@ -86,9 +90,7 @@ class ContextBuilder:
 - 回忆过去的事件：使用 grep 搜索 {workspace_path}/memory/HISTORY.md"""
 
     def build_messages(
-        self, 
-        current_user_message: str,
-        media: Optional[List[str]] = None
+        self, current_user_message: str, media: Optional[List[str]] = None
     ) -> List[Dict[str, Any]]:
         """
         组装全部消息用于大模型 API 调用
@@ -106,10 +108,7 @@ class ContextBuilder:
 
         # 当前轮次用户的输入，追加到 Payload 末尾
         user_content = self._build_user_content(current_user_message, media)
-        messages.append({
-            "role": "user",
-            "content": user_content
-        })
+        messages.append({"role": "user", "content": user_content})
 
         return messages
 
@@ -117,7 +116,7 @@ class ContextBuilder:
         """构建包含可选图片的 User Message Content"""
         if not media:
             return text
-        
+
         images = []
         for path in media:
             p = Path(path)
@@ -125,8 +124,10 @@ class ContextBuilder:
             if not p.is_file() or not mime or not mime.startswith("image/"):
                 continue
             b64 = base64.b64encode(p.read_bytes()).decode()
-            images.append({"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}})
-        
+            images.append(
+                {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}
+            )
+
         if not images:
             return text
         return images + [{"type": "text", "text": text}]
@@ -136,19 +137,21 @@ class ContextBuilder:
         messages: List[Dict[str, Any]],
         tool_call_id: str,
         tool_name: str,
-        result: str
+        result: str,
     ) -> List[Dict[str, Any]]:
         """
         辅助方法：向消息列表中添加工具执行结果
         """
-        messages.append({
-            "role": "tool",
-            "tool_call_id": tool_call_id,
-            "name": tool_name,
-            "content": result
-        })
+        messages.append(
+            {
+                "role": "tool",
+                "tool_call_id": tool_call_id,
+                "name": tool_name,
+                "content": result,
+            }
+        )
         return messages
-    
+
     def add_assistant_message(
         self,
         messages: List[Dict[str, Any]],
@@ -159,7 +162,7 @@ class ContextBuilder:
         辅助方法：向消息列表中添加助手的回复
         """
         msg: Dict[str, Any] = {"role": "assistant"}
-        
+
         msg["content"] = content
 
         if tool_calls:

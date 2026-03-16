@@ -1,8 +1,0 @@
-llm:
-  # OPENAI 格式兼容的 API Key
-  api_key: "****"
-  # 模型名称
-  model: "qwen3.5-plus"
-  
-  # 如果使用兼容 OpenAI 的其他服务 (如 DeepSeek, 阿里通义千问等)，请填写其 base_url
-  base_url: "****"
